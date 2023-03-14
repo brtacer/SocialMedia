@@ -1,4 +1,4 @@
-package com.berat.dto.response;
+package com.berat.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
+public class ActivateRequest {
     private Long id;
     private String activationCode;
 
