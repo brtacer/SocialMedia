@@ -1,9 +1,13 @@
 package com.berat.mapper;
 
+import com.berat.dto.request.ActivateRequest;
+import com.berat.dto.request.ActivateUserRequest;
+import com.berat.dto.request.CreateUserRequest;
 import com.berat.dto.request.RegisterRequest;
 import com.berat.dto.response.AuthResponse;
 import com.berat.model.Auth;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
@@ -13,4 +17,9 @@ public interface IAuthMapper {
 
     Auth toAuth(final RegisterRequest dto);
     AuthResponse toAuthResponse(final Auth auth);
+
+    @Mapping(source = "id",target = "authId")
+    CreateUserRequest toCreateUserRequest(final Auth auth);
+
+
 }
