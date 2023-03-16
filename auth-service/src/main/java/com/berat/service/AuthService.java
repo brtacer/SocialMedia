@@ -12,21 +12,23 @@ import com.berat.model.Auth;
 import com.berat.model.enums.EStatus;
 import com.berat.repository.IAuthRepository;
 import com.berat.utility.CodeGenerator;
+import com.berat.utility.JwtTokenManager;
 import com.berat.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class AuthService extends ServiceManager<Auth,Long> {
     private final IAuthRepository authRepository;
     private final IUserManager userManager;
+    private final JwtTokenManager tokenManager;
 
-    public AuthService(IAuthRepository authRepository, IUserManager userManager) {
+    public AuthService(IAuthRepository authRepository, IUserManager userManager, JwtTokenManager tokenManager) {
         super(authRepository);
         this.authRepository = authRepository;
         this.userManager = userManager;
+        this.tokenManager = tokenManager;
     }
 
     public AuthResponse register(RegisterRequest dto){
@@ -36,11 +38,15 @@ public class AuthService extends ServiceManager<Auth,Long> {
        userManager.createUser(IAuthMapper.INSTANCE.toCreateUserRequest(auth));
        return IAuthMapper.INSTANCE.toAuthResponse(auth);
     }
-    public AuthResponse login(LoginRequest dto){
+    public String login(LoginRequest dto){
         Optional<Auth> auth=authRepository.findByUsernameAndPassword(dto.getUsername(), dto.getPassword());
-        if (auth.isEmpty())
+
+        if (auth.isEmpty() || !auth.get().getStatus().equals(EStatus.ACTIVE))
             throw new AuthManagerException(EErrorType.LOGIN_ERROR);
-        return IAuthMapper.INSTANCE.toAuthResponse(auth.get());
+        if (!auth.get().getStatus().equals(EStatus.ACTIVE))
+            throw new AuthManagerException(EErrorType.NOT_ACTIVE_ACCOUNT);
+        return tokenManager.createToken(auth.get().getId(),auth.get().getRole())
+                .orElseThrow(()-> {throw new AuthManagerException(EErrorType.TOKEN_NOT_CREATED);});
     }
 
     public Boolean activateStatus(ActivateRequest dto) {

@@ -14,6 +14,7 @@ public enum EErrorType {
     USER_NOT_FOUND(4213,"User bulunamadı",HttpStatus.NOT_FOUND ),
     ACTIVATE_CODE_ERROR(4214,"Aktivasyon kod hatası",HttpStatus.BAD_REQUEST),
     USER_NOT_CREATED(4215,"Kullanıcı oluşturulamadı",HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(4216,"Geçersiz token",HttpStatus.BAD_REQUEST),
     ;
 
     private int code;

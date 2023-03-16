@@ -9,4 +9,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/java6USERDB
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+
+jwt:
+  secretkey: ${java6secretkey}
+  audience: ${java6audience}
+  issuer: ${java6issuer}
+

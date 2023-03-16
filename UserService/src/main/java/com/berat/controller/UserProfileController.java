@@ -3,6 +3,7 @@ package com.berat.controller;
 import static com.berat.constant.EndPoints.*;
 
 import com.berat.dto.request.CreateUserRequest;
+import com.berat.dto.request.UpdateUserRequest;
 import com.berat.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,9 @@ public class UserProfileController {
     @GetMapping(ACTIVESTATUS+"/{authId}")
     public ResponseEntity<Boolean> activateStatus(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.activateStatus(authId));
+    }
+    @PutMapping(UPDATE)
+    public ResponseEntity<Boolean> updateUserProfile(@RequestBody UpdateUserRequest dto){
+        return ResponseEntity.ok(userProfileService.updateUserProfile(dto));
     }
 }

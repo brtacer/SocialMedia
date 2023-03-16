@@ -6,6 +6,7 @@ ext {
             openapi: "1.6.14",
             mapstruct: "1.5.3.Final",
             springCloud: "3.1.5",
+            javaJwt: "4.3.0"
     ]
 
     libs=[
@@ -17,11 +18,14 @@ ext {
 
 
 
+
+
             postgresql                          : "org.postgresql:postgresql:$versions.postgresql",
             lombok                              : "org.projectlombok:lombok:$versions.lombok",
             openapi                             : "org.springdoc:springdoc-openapi-ui:$versions.openapi",
             mapstruct                           : "org.mapstruct:mapstruct:$versions.mapstruct",
-            mapstructProccessor                 : "org.mapstruct:mapstruct-processor:$versions.mapstruct"
+            mapstructProccessor                 : "org.mapstruct:mapstruct-processor:$versions.mapstruct",
+            javaJwt                             : "com.auth0:java-jwt:$versions.javaJwt"
 
 
 

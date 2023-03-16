@@ -14,6 +14,10 @@ public enum EErrorType {
     INVALID_PARAMETER_ERROR(4112,"Parametre hatası",HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(4113,"User bulunamadı",HttpStatus.NOT_FOUND ),
     ACTIVATE_CODE_ERROR(4114,"Aktivasyon kod hatası",HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(4115,"Geçersiz token",HttpStatus.BAD_REQUEST),
+    NOT_ACTIVE_ACCOUNT(4116,"Hesap aktif değil",HttpStatus.FORBIDDEN),
+    TOKEN_NOT_CREATED(4117,"Token oluşturulamadı",HttpStatus.FORBIDDEN),
+
 
     ;
 
