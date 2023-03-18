@@ -3,6 +3,7 @@ package com.berat.service;
 import com.berat.dto.request.ActivateRequest;
 import com.berat.dto.request.LoginRequest;
 import com.berat.dto.request.RegisterRequest;
+import com.berat.dto.request.UpdateAuthRequest;
 import com.berat.dto.response.AuthResponse;
 import com.berat.exception.AuthManagerException;
 import com.berat.exception.EErrorType;
@@ -16,6 +17,7 @@ import com.berat.utility.JwtTokenManager;
 import com.berat.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -31,11 +33,16 @@ public class AuthService extends ServiceManager<Auth,Long> {
         this.tokenManager = tokenManager;
     }
 
+    @Transactional// işlemi geri alıyor gerçekleşmezse hata görürse
     public AuthResponse register(RegisterRequest dto){
        Auth auth=IAuthMapper.INSTANCE.toAuth(dto);
        auth.setActivationCode(CodeGenerator.generateCode());
        save(auth);
-       userManager.createUser(IAuthMapper.INSTANCE.toCreateUserRequest(auth));
+       try {
+           userManager.createUser(IAuthMapper.INSTANCE.toCreateUserRequest(auth));
+       }catch (Exception exception){
+           throw new AuthManagerException(EErrorType.USER_NOT_CREATED);
+       }
        return IAuthMapper.INSTANCE.toAuthResponse(auth);
     }
     public String login(LoginRequest dto){
@@ -61,6 +68,23 @@ public class AuthService extends ServiceManager<Auth,Long> {
         }else {
             throw new AuthManagerException(EErrorType.ACTIVATE_CODE_ERROR);
         }
-
+    }
+    public Boolean updateAuth(UpdateAuthRequest dto){
+        Optional<Auth> auth=findById(dto.getAuthId());
+        if (auth.isEmpty())
+            throw new AuthManagerException(EErrorType.USER_NOT_FOUND);
+        auth.get().setEmail(dto.getEmail());
+        auth.get().setUsername(dto.getUsername());
+        update(auth.get());
+        return true;
+    }
+    public Boolean deActivate(Long id){
+        Optional<Auth> auth=findById(id);
+        if (auth.isEmpty())
+            throw new AuthManagerException(EErrorType.USER_NOT_FOUND);
+        auth.get().setStatus(EStatus.DELETED);
+        update(auth.get());
+        userManager.deActivate(id);
+        return true;
     }
 }

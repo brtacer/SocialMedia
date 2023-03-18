@@ -27,4 +27,8 @@ public class UserProfileController {
     public ResponseEntity<Boolean> updateUserProfile(@RequestBody UpdateUserRequest dto){
         return ResponseEntity.ok(userProfileService.updateUserProfile(dto));
     }
+    @DeleteMapping(DELETEBYID)
+    public ResponseEntity<Boolean> deActive(@RequestParam Long authId){
+        return ResponseEntity.ok(userProfileService.deActive(authId));
+    }
 }

@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
 
     private ErrorMessage createErrorMessage(EErrorType errorType,Exception exception){
         System.out.println("Hata oluştu: "+exception.getMessage());
+        exception.printStackTrace();
         return ErrorMessage.builder()
                 .code(errorType.getCode())
                 .message(errorType.getMessage())
@@ -26,6 +27,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex){
+        ex.printStackTrace();
         return ResponseEntity.ok("Beklenmeyen bir hata olustu: "+ex.getMessage());
     }
     @ExceptionHandler(UserManagerException.class)
@@ -86,4 +88,5 @@ public class GlobalExceptionHandler {
         errorMessage.setField(fields);
         return new ResponseEntity<>(createErrorMessage(errorType, exception), errorType.getHttpStatus());
     }
+
 }

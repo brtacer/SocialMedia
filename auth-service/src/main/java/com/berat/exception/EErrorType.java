@@ -17,6 +17,7 @@ public enum EErrorType {
     INVALID_TOKEN(4115,"Geçersiz token",HttpStatus.BAD_REQUEST),
     NOT_ACTIVE_ACCOUNT(4116,"Hesap aktif değil",HttpStatus.FORBIDDEN),
     TOKEN_NOT_CREATED(4117,"Token oluşturulamadı",HttpStatus.FORBIDDEN),
+    USER_NOT_CREATED(4117,"Userprofile oluşturulamadı",HttpStatus.FORBIDDEN),
 
 
     ;

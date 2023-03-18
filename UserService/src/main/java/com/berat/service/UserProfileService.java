@@ -1,8 +1,10 @@
 package com.berat.service;
 
 import com.berat.dto.request.CreateUserRequest;
+import com.berat.dto.request.UpdateAuthRequest;
 import com.berat.dto.request.UpdateUserRequest;
 import com.berat.exception.UserManagerException;
+import com.berat.manager.IAuthManager;
 import com.berat.mapper.IUserMapper;
 import com.berat.model.UserProfile;
 import com.berat.model.enums.EStatus;
@@ -20,11 +22,13 @@ import static com.berat.exception.EErrorType.*;
 public class UserProfileService extends ServiceManager<UserProfile,Long> {
     private final IUserProfileRepository userProfileRepository;
     private final JwtTokenManager tokenManager;
+    private final IAuthManager authManager;
 
-    public UserProfileService(IUserProfileRepository userProfileRepository, JwtTokenManager tokenManager) {
+    public UserProfileService(IUserProfileRepository userProfileRepository, JwtTokenManager tokenManager, IAuthManager authManager) {
         super(userProfileRepository);
         this.userProfileRepository = userProfileRepository;
         this.tokenManager = tokenManager;
+        this.authManager = authManager;
     }
 
     public Boolean createUser(CreateUserRequest dto) {
@@ -45,17 +49,42 @@ public class UserProfileService extends ServiceManager<UserProfile,Long> {
         Optional<Long> authId=tokenManager.getIdFromToken(dto.getToken());
         if (authId.isEmpty())
             throw new UserManagerException(INVALID_TOKEN);
+
         Optional<UserProfile> userProfile=userProfileRepository.findByAuthId(authId.get());
         if (userProfile.isEmpty())
             throw new UserManagerException(USER_NOT_FOUND);
+
         UserProfile toUpdate=userProfile.get();
+
+        if (!dto.getUsername().equals(toUpdate.getUsername()) ||
+        !dto.getEmail().equals(toUpdate.getEmail())){
+
+            toUpdate.setEmail(dto.getEmail());
+            toUpdate.setUsername(dto.getUsername());
+
+            authManager.updateUserProfile(UpdateAuthRequest.builder()
+                    .authId(authId.get())
+                    .email(dto.getEmail())
+                    .username(dto.getUsername())
+                    .build());
+        }
+
         toUpdate.setPhone(dto.getPhone());
         toUpdate.setAvatar(dto.getAvatar());
         toUpdate.setAddress(dto.getAddress());
-        toUpdate.setEmail(dto.getEmail());
         toUpdate.setAbout(dto.getAbout());
         update(toUpdate);
+
         return true;
 
+    }
+
+    public Boolean deActive(Long authId) {
+        Optional<UserProfile> userProfile=userProfileRepository.findByAuthId(authId);
+        if (userProfile.isEmpty())
+            throw new UserManagerException(USER_NOT_FOUND);
+        userProfile.get().setStatus(EStatus.DELETED);
+        update(userProfile.get());
+        return true;
     }
 }

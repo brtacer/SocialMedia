@@ -4,6 +4,7 @@ import static com.berat.constant.EndPoints.*;
 import com.berat.dto.request.ActivateRequest;
 import com.berat.dto.request.LoginRequest;
 import com.berat.dto.request.RegisterRequest;
+import com.berat.dto.request.UpdateAuthRequest;
 import com.berat.dto.response.AuthResponse;
 import com.berat.model.Auth;
 import com.berat.model.enums.ERole;
@@ -40,7 +41,15 @@ public class AuthController {
     public ResponseEntity<List<Auth>> findAll(){
         return ResponseEntity.ok(authService.findAll());
     }
-
+    @PutMapping(UPDATE)
+    public ResponseEntity<Void> updateUserProfile(@RequestBody UpdateAuthRequest dto){
+        authService.updateAuth(dto);
+        return ResponseEntity.ok().build();
+    }
+    @DeleteMapping(DELETEBYID)
+    public ResponseEntity<Boolean> deActivate(@RequestParam Long id){
+        return ResponseEntity.ok(authService.deActivate(id));
+    }
     @GetMapping("/createtoken")
     public ResponseEntity<String> createToken(Long id, ERole role){
         return ResponseEntity.ok(tokenManager.createToken(id,role).get());

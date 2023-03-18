@@ -1,6 +1,8 @@
 package com.berat.mapper;
 
 import com.berat.dto.request.CreateUserRequest;
+import com.berat.dto.request.UpdateAuthRequest;
+import com.berat.dto.request.UpdateUserRequest;
 import com.berat.model.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -11,4 +13,5 @@ public interface IUserMapper {
     IUserMapper INSTANCE= Mappers.getMapper(IUserMapper.class);
 
     UserProfile toUser(final CreateUserRequest dto);
+
 }
