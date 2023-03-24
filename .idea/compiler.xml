@@ -10,8 +10,10 @@
         </processorPath>
         <module name="socialmedia.config-server.main" />
         <module name="socialmedia.main" />
-        <module name="socialmedia.UserService.main" />
+        <module name="socialmedia.mail-service.main" />
         <module name="socialmedia.auth-service.main" />
+        <module name="socialmedia.elastic-service.main" />
+        <module name="socialmedia.userr-service.main" />
         <module name="socialmedia.api-gateway-service.main" />
         <module name="socialmedia.config-server-git.main" />
       </profile>

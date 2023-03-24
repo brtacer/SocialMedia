@@ -18,6 +18,7 @@ public enum EErrorType {
     NOT_ACTIVE_ACCOUNT(4116,"Hesap aktif değil",HttpStatus.FORBIDDEN),
     TOKEN_NOT_CREATED(4117,"Token oluşturulamadı",HttpStatus.FORBIDDEN),
     USER_NOT_CREATED(4117,"Userprofile oluşturulamadı",HttpStatus.FORBIDDEN),
+    ROLE_NOT_FOUND(4117,"Role bulunamadı",HttpStatus.NOT_FOUND),
 
 
     ;

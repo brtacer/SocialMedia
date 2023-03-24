@@ -8,4 +8,6 @@ dependencies {
     implementation libs.springBootDataJpa
     implementation libs.postgresql
     implementation libs.springCloudConfigClient
+    implementation libs.springBootRabbitmq
+    implementation libs.springBootSecurity
 }

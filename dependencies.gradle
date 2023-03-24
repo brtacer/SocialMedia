@@ -14,8 +14,16 @@ ext {
             springBootWeb                       : "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
             springBootDataJpa                   : "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
             springBootValidation                : "org.springframework.boot:spring-boot-starter-validation:$versions.springBoot",
+            springBootSecurity                  : "org.springframework.boot:spring-boot-starter-security:$versions.springBoot",
+            springBootMailSender                : "org.springframework.boot:spring-boot-starter-mail:$versions.springBoot",
+
+            springBootDataRedis                 : "org.springframework.boot:spring-boot-starter-data-redis:$versions.springBoot",
+            springBootRabbitmq                  : "org.springframework.boot:spring-boot-starter-amqp:$versions.springBoot",
+            springBootMongoDb                   : "org.springframework.boot:spring-boot-starter-data-mongodb:$versions.springBoot",
+            springBootElasticSearch             : "org.springframework.boot:spring-boot-starter-data-elasticsearch:$versions.springBoot",
 
             springCloudOpenFeign                : "org.springframework.cloud:spring-cloud-starter-openfeign:$versions.springCloud",
+
             springCloudConfigServer             : "org.springframework.cloud:spring-cloud-config-server:$versions.springCloud",
             springCloudConfigClient             : "org.springframework.cloud:spring-cloud-config-client:$versions.springCloud",
             springCloudConfigStarter            : "org.springframework.cloud:spring-cloud-starter-config:$versions.springCloud",
@@ -23,6 +31,9 @@ ext {
             springCloudStarterGateway           : "org.springframework.cloud:spring-cloud-starter-gateway:$versions.springCloud",
             springCloudCircuitBreaker           :"org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:$versions.circuitBreaker",
             springCloudCircuitReactor           :"org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j:$versions.circuitBreaker",
+
+            springCloudStarterSleuth            : "org.springframework.cloud:spring-cloud-starter-sleuth:$versions.springCloud",
+            springCloudZipkin                   : "org.springframework.cloud:spring-cloud-sleuth-zipkin:$versions.springCloud",
 
 
             postgresql                          : "org.postgresql:postgresql:$versions.postgresql",

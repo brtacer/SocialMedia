@@ -2,6 +2,15 @@ server:
   port: 7071
 
 spring:
+  security:
+    user:
+      name: berat
+      password: 123
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411
+    service:
+      name: auth-service
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
@@ -10,8 +19,20 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: root
 
 jwt:
   secretkey: ${java6secretkey}
   audience: ${java6audience}
   issuer: ${java6issuer}
+
+rabbitmq:
+  exchange-auth: auth-exchange
+  registerKey: register-key
+  queueRegister: register-queue
+  queueMail: activate-mail
+  mailKey: mail-key
