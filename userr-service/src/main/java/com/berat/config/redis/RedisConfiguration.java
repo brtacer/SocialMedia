@@ -1,6 +1,7 @@
 package com.berat.config.redis;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,13 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories
 public class RedisConfiguration {
 
+    @Value("${redis.host}")
+    private String host;
+    @Value("${redis.port}")
+    private int port;
+
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
-    return new LettuceConnectionFactory(new RedisStandaloneConfiguration("localhost",6379));
+        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host,port));
     }
 }

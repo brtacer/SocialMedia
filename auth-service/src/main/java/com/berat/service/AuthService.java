@@ -1,9 +1,6 @@
 package com.berat.service;
 
-import com.berat.dto.request.ActivateRequest;
-import com.berat.dto.request.LoginRequest;
-import com.berat.dto.request.RegisterRequest;
-import com.berat.dto.request.UpdateAuthRequest;
+import com.berat.dto.request.*;
 import com.berat.dto.response.AuthResponse;
 import com.berat.exception.AuthManagerException;
 import com.berat.exception.EErrorType;
@@ -12,7 +9,6 @@ import com.berat.mapper.IAuthMapper;
 import com.berat.model.Auth;
 import com.berat.model.enums.ERole;
 import com.berat.model.enums.EStatus;
-import com.berat.rabbitmq.model.RegisterMailModel;
 import com.berat.rabbitmq.producer.RegisterMailProducer;
 import com.berat.rabbitmq.producer.RegisterProducer;
 import com.berat.repository.IAuthRepository;
@@ -20,6 +16,7 @@ import com.berat.utility.CodeGenerator;
 import com.berat.utility.JwtTokenManager;
 import com.berat.utility.ServiceManager;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,10 +32,11 @@ public class AuthService extends ServiceManager<Auth,Long> {
     private final CacheManager cacheManager;
     private final RegisterProducer registerProducer;
     private final RegisterMailProducer registerMailProducer;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthService(IAuthRepository authRepository, IUserManager userManager,
                        JwtTokenManager tokenManager, CacheManager cacheManager,
-                       RegisterProducer registerProducer, RegisterMailProducer registerMailProducer) {
+                       RegisterProducer registerProducer, RegisterMailProducer registerMailProducer, PasswordEncoder passwordEncoder) {
         super(authRepository);
         this.authRepository = authRepository;
         this.userManager = userManager;
@@ -46,6 +44,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
         this.cacheManager = cacheManager;
         this.registerProducer = registerProducer;
         this.registerMailProducer = registerMailProducer;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional// işlemi geri alıyor gerçekleşmezse hata görürse
@@ -64,6 +63,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
     }
     @Transactional
     public AuthResponse registerWithRabbit(RegisterRequest dto){
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         Auth auth=IAuthMapper.INSTANCE.toAuth(dto);
         auth.setActivationCode(CodeGenerator.generateCode());
 
@@ -78,9 +78,10 @@ public class AuthService extends ServiceManager<Auth,Long> {
         return IAuthMapper.INSTANCE.toAuthResponse(auth);
     }
     public String login(LoginRequest dto){
-        Optional<Auth> auth=authRepository.findByUsernameAndPassword(dto.getUsername(), dto.getPassword());
+        Optional<Auth> auth=authRepository.findByUsername(dto.getUsername());
 
-        if (auth.isEmpty())
+
+        if (auth.isEmpty() || !passwordEncoder.matches(dto.getPassword(), auth.get().getPassword()))
             throw new AuthManagerException(EErrorType.LOGIN_ERROR);
         if (!auth.get().getStatus().equals(EStatus.ACTIVE))
             throw new AuthManagerException(EErrorType.NOT_ACTIVE_ACCOUNT);
@@ -95,7 +96,8 @@ public class AuthService extends ServiceManager<Auth,Long> {
         if (dto.getActivationCode().equals(auth.get().getActivationCode())){
             auth.get().setStatus(EStatus.ACTIVE);
             update(auth.get());
-            userManager.activateStatus(dto.getId());
+            String token = tokenManager.createToken(auth.get().getId(),auth.get().getRole()).get();
+            userManager.activateStatus("Bearer "+token);
             return true;
         }else {
             throw new AuthManagerException(EErrorType.ACTIVATE_CODE_ERROR);

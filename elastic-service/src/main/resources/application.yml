@@ -1,22 +1,8 @@
-server:
-  port: 7079
-
 spring:
-  elasticsearch:
-    uris: http://localhost:9200
-  zipkin:
-    enabled: true
-    base-url: http://localhost:9411
-    service:
-      name: auth-service
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: user
-    password: root
-
-rabbitmq:
-  exchange-user: user-exchange
-  registerElasticKey: elastic-key
-  queueElastic: register-elastic
-  queueRegister: register-queue
+  cloud:
+    config:
+      uri: ${config_server_url}
+  config:
+    import: "configserver:"
+  application:
+    name: elastic-service-application

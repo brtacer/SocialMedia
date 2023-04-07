@@ -3,6 +3,7 @@ package com.berat.constant;
 public class EndPoints {
     public static final String VERSION="api/v1";
     public static final String USER=VERSION+"/user";
+    public static final String FOLLOW=VERSION+"/follow";
 
     // Auth Controller
     public static final String CREATE="/create";

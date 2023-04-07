@@ -9,6 +9,9 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @SuperBuilder
 @Data
@@ -28,4 +31,9 @@ public class UserProfile extends BaseEntity {
     private String about;
     @Builder.Default
     private EStatus status=EStatus.PENDING;
+    @Builder.Default
+    private List<String> follows=new ArrayList<>();
+    @Builder.Default
+    private List<String> followers=new ArrayList<>();
+
 }

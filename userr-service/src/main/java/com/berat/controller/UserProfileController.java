@@ -8,6 +8,7 @@ import com.berat.model.UserProfile;
 import com.berat.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class UserProfileController {
     public ResponseEntity<Boolean> createUser(@RequestBody CreateUserRequest dto){
         return ResponseEntity.ok(userProfileService.createUser(dto));
     }
-    @GetMapping(ACTIVESTATUS+"/{authId}")
-    public ResponseEntity<Boolean> activateStatus(@PathVariable Long authId){
-        return ResponseEntity.ok(userProfileService.activateStatus(authId));
+    @PostMapping(ACTIVESTATUS)
+    public ResponseEntity<Boolean> activateStatus(@RequestHeader(value = "Authorization") String token){
+        return ResponseEntity.ok(userProfileService.activateStatus(token));
     }
     @PutMapping(UPDATE)
     public ResponseEntity<Boolean> updateUserProfile(@RequestBody UpdateUserRequest dto){
@@ -35,6 +36,7 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.deActive(authId));
     }
     @GetMapping(FINDALL)
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<UserProfile>> findAll(){
         return ResponseEntity.ok(userProfileService.findAll());
     }
@@ -43,7 +45,7 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.findByUsername(username));
     }
     @GetMapping(FINDBYROLE)
-    public ResponseEntity<List<UserProfile>> findByRole(@RequestParam String role){
-        return ResponseEntity.ok(userProfileService.findByRole(role));
+    public ResponseEntity<List<UserProfile>> findByRole(@RequestHeader(value = "Authorization") String token, @RequestParam String role){
+        return ResponseEntity.ok(userProfileService.findByRole(role, token));
     }
 }

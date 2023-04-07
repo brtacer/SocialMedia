@@ -53,8 +53,11 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
         return true;
     }
 
-    public Boolean activateStatus(Long authId) {
-        Optional<UserProfile> userProfile =userProfileRepository.findByAuthId(authId);
+    public Boolean activateStatus(String token) {
+        Optional<Long> authId = tokenManager.getIdFromToken(token.substring(7));
+        if (authId.isEmpty())
+            throw new UserManagerException(INVALID_TOKEN);
+        Optional<UserProfile> userProfile =userProfileRepository.findByAuthId(authId.get());
         if (userProfile.isEmpty())
             throw new UserManagerException(USER_NOT_FOUND);
         userProfile.get().setStatus(EStatus.ACTIVE);
@@ -80,7 +83,7 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
             toUpdate.setEmail(dto.getEmail());
             toUpdate.setUsername(dto.getUsername());
 
-            authManager.updateUserProfile(UpdateAuthRequest.builder()
+            authManager.updateUserProfile("Bearer "+dto.getToken(),UpdateAuthRequest.builder()
                     .authId(authId.get())
                     .email(dto.getEmail())
                     .username(dto.getUsername())
@@ -110,9 +113,12 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
         return userProfileRepository.findByUsernameIgnoreCase(username).orElseThrow(()-> new UserManagerException(USER_NOT_FOUND));
     }
     @Cacheable(value = "findbyrole",key = "#role.toUpperCase()") // küçük büyük duyarlı olmasın
-    public List<UserProfile> findByRole(String role){
-        List<Long> authIds = authManager.findByRole(role).getBody();// response entity dönüyor get body dedik.
+    public List<UserProfile> findByRole(String role,String token){
+        List<Long> authIds = authManager.findByRole(token,role).getBody();// response entity dönüyor get body dedik.
         return authIds.stream().map(a-> userProfileRepository.findByAuthId(a)
                 .orElseThrow(()-> new UserManagerException(USER_NOT_FOUND))).toList();
+    }
+    public Optional<UserProfile> findByAuthId(Long authId){
+        return userProfileRepository.findByAuthId(authId);
     }
 }

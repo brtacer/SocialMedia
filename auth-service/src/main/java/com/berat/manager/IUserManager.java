@@ -1,5 +1,6 @@
 package com.berat.manager;
 
+import com.berat.dto.request.ActivateStatusDto;
 import com.berat.dto.request.CreateUserRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,8 @@ public interface IUserManager {
     @PostMapping("/create")
     public ResponseEntity<Boolean> createUser(@RequestBody CreateUserRequest dto);
 
-    @GetMapping(ACTIVESTATUS+"/{authId}")
-    public ResponseEntity<Boolean> activateStatus(@PathVariable Long authId);
+    @PostMapping(ACTIVESTATUS)
+    public ResponseEntity<Boolean> activateStatus(@RequestHeader(value = "Authorization") String token);
     @DeleteMapping(DELETEBYID)
     public ResponseEntity<Boolean> deActivate(@RequestParam Long authId);
 }

@@ -54,7 +54,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.findAll());
     }
     @PutMapping(UPDATE)
-    public ResponseEntity<Void> updateUserProfile(@RequestBody UpdateAuthRequest dto){
+    public ResponseEntity<Void> updateUserProfile(@RequestHeader(value = "Authorization") String token, @RequestBody UpdateAuthRequest dto){
         authService.updateAuth(dto);
         return ResponseEntity.ok().build();
     }
@@ -106,7 +106,7 @@ public class AuthController {
     }
 
     @GetMapping(FINDBYROLE)
-    public ResponseEntity<List<Long>> findByRole(@RequestParam String role){
+    public ResponseEntity<List<Long>> findByRole(@RequestHeader(value = "Authorization") String token, @RequestParam String role){
         return ResponseEntity.ok(authService.findByRole(role));
     }
 

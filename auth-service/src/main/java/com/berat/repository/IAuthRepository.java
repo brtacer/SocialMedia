@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface IAuthRepository extends JpaRepository<Auth,Long> {
     Optional<Auth> findByUsernameAndPassword(String username, String password);
+    Optional<Auth> findByUsername(String username);
     List<Auth> findAllByRole(ERole role);
 }
